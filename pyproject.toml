@@ -1,0 +1,14 @@
+[project]
+name = "benchmark-mongodb-postgres-jsonb"
+version = "0.2.0"
+description = "Benchmark riguroso de agregaciones JSON bajo contención cgroups v2: MongoDB vs PostgreSQL JSONB"
+requires-python = ">=3.10"
+dependencies = [
+    "psycopg[binary]>=3.2",
+    "pymongo>=4.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]

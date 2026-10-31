@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+data/
+state/
+state-rehearsal/
+results-rehearsal/
+results/discarded/
+incidents/
+.claude/
