@@ -8,7 +8,9 @@ from benchmark_runner.config import ROOT
 
 AGENT_TIMEOUT_S = 900
 MAX_ATTEMPTS = 2
-MAX_INCIDENTS = 4
+# Tope operativo (no afecta a la medición). Subido de 4 a 12 tras observar que Docker Desktop/WSL2
+# se degrada tras ~1.5 h de uso continuo y agotaba el presupuesto original en una sola noche.
+MAX_INCIDENTS = 12
 
 
 def _capture(cmd):

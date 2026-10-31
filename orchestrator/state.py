@@ -7,6 +7,9 @@ from dataclasses import dataclass, field
 from benchmark_runner.config import CONCURRENCIES, ENGINES, PROFILES, QUERIES, REPETITIONS
 
 RELAXED_PROFILES = ("C",)
+# Extensión (lectura literal de la Sección 5.2 del playbook): las dos variantes de memoria de Q2
+# en TODOS los perfiles. Q2 relaxed en C ya está en el bloque anterior; aquí se añaden A y B.
+Q2_RELAXED_EXTRA_PROFILES = ("A", "B")
 
 
 def _run(engine, profile, query, concurrency, rep, variant):
@@ -28,6 +31,10 @@ def build_plan(seed, repetitions=REPETITIONS):
     - Celdas de contraste de memoria (variante 'relaxed': work_mem=64MB / allowDiskUse=true)
       para Q1 y Q2 en Perfil C con c = 1, 10, 50 (Sección 6 del playbook: las tres
       concurrencias por escenario) -> anexo_variantes.csv (responde M2). 36 corridas.
+    - Extensión: Q2 'relaxed' en perfiles A y B con c = 1, 10, 50 -> anexo_variantes.csv.
+      36 corridas. Se baraja como bloque final con el mismo generador, de modo que las 144
+      corridas originales conservan exactamente su orden y build_plan(seed) reproduce el plan.
+    Total: 108 + 36 + 36 = 180 corridas.
     """
     rng = random.Random(seed)
     plan = []
@@ -44,7 +51,13 @@ def build_plan(seed, repetitions=REPETITIONS):
         for rep in range(1, repetitions + 1)
     ]
     rng.shuffle(relaxed)
-    return plan + relaxed
+    extension = [
+        _run(e, p, "Q2", c, rep, "relaxed")
+        for e in ENGINES for p in Q2_RELAXED_EXTRA_PROFILES for c in CONCURRENCIES
+        for rep in range(1, repetitions + 1)
+    ]
+    rng.shuffle(extension)
+    return plan + relaxed + extension
 
 
 class Journal:
