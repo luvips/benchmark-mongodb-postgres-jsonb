@@ -105,11 +105,22 @@ def write_bytes(path: Path):
     return sum(int(value) for key, _, value in fields if key == "wbytes")
 
 
+CGROUP_ROOTS = (
+    Path("/sys/fs/cgroup"),
+    Path(r"\\wsl.localhost\docker-desktop\sys\fs\cgroup"),
+)
+PROC_ROOTS = (
+    Path("/proc"),
+    Path(r"\\wsl.localhost\docker-desktop\proc"),
+)
+
+
 class Cgroup:
     def __init__(self, cid):
         candidates = [
-            Path(f"/sys/fs/cgroup/system.slice/docker-{cid}.scope"),
-            Path(f"/sys/fs/cgroup/docker/{cid}"),
+            root / rel
+            for root in CGROUP_ROOTS
+            for rel in (f"system.slice/docker-{cid}.scope", f"docker/{cid}")
         ]
         self.path = next((p for p in candidates if p.exists()), candidates[0])
 
@@ -137,8 +148,8 @@ class Cgroup:
 
 
 def _cpu_times(cpus):
-    proc_stat = Path("/proc/stat")
-    if not proc_stat.exists():
+    proc_stat = next((r / "stat" for r in PROC_ROOTS if (r / "stat").exists()), None)
+    if proc_stat is None:
         return 0, 1
     busy = total = 0
     for line in proc_stat.read_text().splitlines():

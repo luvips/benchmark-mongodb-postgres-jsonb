@@ -8,3 +8,6 @@ results-rehearsal/
 results/discarded/
 incidents/
 .claude/
+*.egg-info/
+.pytest_cache/
+

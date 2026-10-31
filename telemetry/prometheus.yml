@@ -5,8 +5,10 @@ global:
 
 scrape_configs:
   - job_name: cadvisor
+    honor_timestamps: false
     static_configs:
       - targets: ["cadvisor:8080"]
   - job_name: node
     static_configs:
       - targets: ["node-exporter:9100"]
+

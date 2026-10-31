@@ -1,5 +1,13 @@
 import os
+import sys
 from pathlib import Path
+
+if "--rehearsal" in sys.argv:
+    os.environ.setdefault("BENCH_REHEARSAL", "1")
+    os.environ.setdefault("BENCH_STATE_DIR", "state-rehearsal")
+    os.environ.setdefault("BENCH_RESULTS_DIR", "results-rehearsal")
+    os.environ.setdefault("BENCH_PHASE_SCALE", "0.05")
+    os.environ.setdefault("BENCH_DATA", "data/fixture.ndjson")
 
 ROOT = Path(__file__).resolve().parent.parent
 

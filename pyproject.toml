@@ -8,7 +8,16 @@ dependencies = [
     "pymongo>=4.9",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=8.0",
 ]
+
+[tool.setuptools]
+packages = ["benchmark_runner", "orchestrator"]
+

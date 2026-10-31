@@ -1,6 +1,7 @@
 """CLI de run_benchmarks.sh con soporte para Linux nativo y WSL2, más agregación estadística."""
 import argparse
 import csv
+import ctypes
 import json
 import os
 import statistics
@@ -10,8 +11,13 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 from benchmark_runner.config import (CONCURRENCIES, DATA_PATH, ENGINES, MIN_P99_SAMPLES, PROFILES,
                                      QUERIES, REHEARSAL, RESULTS_DIR, ROOT, STATE_DIR, VARIANTS)
+from benchmark_runner.telemetry import PROC_ROOTS
 
 # Consultas adicionales solo para la celda piloto (no forman parte de la matriz)
 PILOT_ONLY_QUERIES = {"Q1_FLOAT8": "postgresql"}
@@ -36,38 +42,66 @@ def _pid_file():
     return STATE_DIR / "campaign.pid"
 
 
-def service_active():
-    if subprocess.run(["systemctl", "--user", "is-active", "--quiet", UNIT], capture_output=True).returncode == 0:
+def _pid_alive(pid: int) -> bool:
+    if os.name == "nt":
+        k32 = ctypes.windll.kernel32
+        handle = k32.OpenProcess(0x1000, False, pid)
+        if not handle:
+            return False
+        code = ctypes.c_ulong()
+        ok = k32.GetExitCodeProcess(handle, ctypes.byref(code))
+        k32.CloseHandle(handle)
+        return bool(ok and code.value == 259)
+    try:
+        os.kill(pid, 0)
         return True
+    except OSError:
+        return False
+
+
+def service_active():
+    try:
+        if subprocess.run(["systemctl", "--user", "is-active", "--quiet", UNIT], capture_output=True).returncode == 0:
+            return True
+    except FileNotFoundError:
+        pass
     pf = _pid_file()
     if pf.exists():
         try:
-            pid = int(pf.read_text().strip())
-            os.kill(pid, 0)
-            return True
+            return _pid_alive(int(pf.read_text().strip()))
         except (ValueError, OSError):
             return False
     return False
 
 
+def _python_bin() -> Path:
+    for rel in (".venv/bin/python", ".venv/Scripts/python.exe"):
+        candidate = ROOT / rel
+        if candidate.exists():
+            return candidate
+    return Path(sys.executable)
+
+
 def launch():
     log = ROOT / STATE_DIR.name / "campaign.log"
     log.parent.mkdir(parents=True, exist_ok=True)
-    py_bin = ROOT / ".venv/bin/python"
-    if not py_bin.exists():
-        py_bin = Path(sys.executable)
+    py_bin = _python_bin()
 
-    # Intenta systemd-run --user primero; si no está disponible (ej. WSL2 sin systemd user bus),
+    # Intenta systemd-run --user primero; si no está disponible (ej. WSL2/Windows sin systemd user bus),
     # usa proceso background desacoplado con archivo PID.
-    env = [f"--setenv={k}={v}" for k, v in os.environ.items() if k.startswith("BENCH_") or k in ("PATH", "HOME")]
-    subprocess.run(["systemctl", "--user", "reset-failed", UNIT], capture_output=True)
-    res = subprocess.run([
-        "systemd-run", "--user", f"--unit={UNIT}", "--collect", "--same-dir", *env,
-        f"--property=StandardOutput=append:{log}", f"--property=StandardError=append:{log}",
-        str(py_bin), "-m", "orchestrator.campaign",
-    ], capture_output=True)
-    if res.returncode == 0:
-        return
+    if os.name != "nt":
+        env = [f"--setenv={k}={v}" for k, v in os.environ.items() if k.startswith("BENCH_") or k in ("PATH", "HOME")]
+        try:
+            subprocess.run(["systemctl", "--user", "reset-failed", UNIT], capture_output=True)
+            res = subprocess.run([
+                "systemd-run", "--user", f"--unit={UNIT}", "--collect", "--same-dir", *env,
+                f"--property=StandardOutput=append:{log}", f"--property=StandardError=append:{log}",
+                str(py_bin), "-m", "orchestrator.campaign",
+            ], capture_output=True)
+            if res.returncode == 0:
+                return
+        except FileNotFoundError:
+            pass
     with log.open("a", encoding="utf-8") as out:
         proc = subprocess.Popen(
             [str(py_bin), "-m", "orchestrator.campaign"],
@@ -95,15 +129,17 @@ def save_host_spec():
         "swapon --show",
         "docker version",
         "docker compose version",
-        "docker info --format 'cgroup v{{.CgroupVersion}}, driver {{.CgroupDriver}}, storage {{.Driver}}'",
+        'docker info --format "cgroup v{{.CgroupVersion}}, driver {{.CgroupDriver}}, storage {{.Driver}}"',
         "docker compose config --images",
     ]
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    proc_ver_path = next((r / "version" for r in PROC_ROOTS if (r / "version").exists()), None)
+    proc_ver = proc_ver_path.read_text(encoding="utf-8", errors="ignore") if proc_ver_path else ""
     with (RESULTS_DIR / "host_spec.txt").open("w", encoding="utf-8") as out:
-        proc_ver = Path("/proc/version").read_text(encoding="utf-8", errors="ignore") if Path("/proc/version").exists() else ""
         if "microsoft" in proc_ver.lower() or "wsl" in proc_ver.lower():
             out.write("# NOTA METODOLÓGICA: Entorno ejecutado bajo WSL2 (Windows Subsystem for Linux 2).\n")
-            out.write("# Node Exporter y drop_caches operan sobre el kernel de la VM Linux de WSL2.\n\n")
+            out.write("# Node Exporter y drop_caches operan sobre el kernel de la VM Linux de WSL2.\n")
+            out.write(f"# Kernel VM: {proc_ver.strip()}\n\n")
         for command in commands:
             result = subprocess.run(command, shell=True, cwd=ROOT, capture_output=True, text=True)
             out.write(f"$ {command}\n{result.stdout}{result.stderr}\n")
@@ -190,14 +226,29 @@ def cmd_wait_end(args):
         time.sleep(30)
 
 
+def _ensure_rehearsal_fixture(path: Path):
+    if REHEARSAL and not path.exists():
+        full = ROOT / "data/orders.ndjson"
+        if full.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with full.open(encoding="utf-8") as src, path.open("w", encoding="utf-8") as dst:
+                for i, line in enumerate(src):
+                    if i >= 2000:
+                        break
+                    dst.write(line)
+
+
 def cmd_validate(args):
-    report = dataload.validate(Path(args.file) if args.file else DATA_PATH)
+    target = Path(args.file) if args.file else DATA_PATH
+    _ensure_rehearsal_fixture(target)
+    report = dataload.validate(target)
     print(json.dumps(report, indent=1, ensure_ascii=False))
     if report["errors"]:
         sys.exit(1)
 
 
 def load(path):
+    _ensure_rehearsal_fixture(path)
     report = dataload.validate(path)
     if report["errors"]:
         sys.exit("Dataset inválido:\n" + "\n".join(report["errors"]))
@@ -261,6 +312,11 @@ def cmd_run_one(args):
     host.start_engine(args.engine, args.profile)
     host.wait_ready(args.engine)
     outcome = execute(run, out / run["id"], lambda: False)
+    try:
+        host.wait_ready(args.engine, timeout=5)
+    except host.Fault:
+        host.start_engine(args.engine, args.profile)
+        host.wait_ready(args.engine)
     (out / f"{run['id']}.plan.txt").write_text(
         explain.explain(args.engine, args.query, args.variant), encoding="utf-8"
     )
@@ -338,6 +394,7 @@ def cmd_summarize(args):
 
 def main():
     parser = argparse.ArgumentParser(prog="run_benchmarks.sh")
+    parser.add_argument("--rehearsal", action="store_true", help="Ejecuta modo ensayo con ventanas al 5%%")
     sub = parser.add_subparsers(dest="command", required=True)
     for name, handler in (
         ("start", cmd_start),

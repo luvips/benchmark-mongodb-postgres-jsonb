@@ -120,15 +120,19 @@ def energy_restore():
         _energy_file().unlink(missing_ok=True)
 
 
+from benchmark_runner.telemetry import PROC_ROOTS
+
+
 def disk_free_gib():
     return shutil.disk_usage("/var/lib/docker" if Path("/var/lib/docker").exists() else ROOT).free / 2**30
 
 
 def mem_available_gib():
-    meminfo = Path("/proc/meminfo")
-    if not meminfo.exists():
+    meminfo = next((r / "meminfo" for r in PROC_ROOTS if (r / "meminfo").exists()), None)
+    if meminfo is None:
         return 8.0
     for line in meminfo.read_text().splitlines():
         if line.startswith("MemAvailable:"):
             return int(line.split()[1]) / 2**20
     return 0.0
+

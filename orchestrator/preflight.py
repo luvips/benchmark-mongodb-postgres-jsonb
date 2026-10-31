@@ -5,7 +5,7 @@ from pathlib import Path
 
 from benchmark_runner.config import (DATA_PATH, DB_CPUS, IDLE_SIBLING_CPUS, REHEARSAL, ROOT,
                                      RUNNER_CPUS, STATE_DIR)
-from benchmark_runner.telemetry import host_busy_pct
+from benchmark_runner.telemetry import CGROUP_ROOTS, host_busy_pct
 
 from . import host, manifest
 
@@ -39,10 +39,11 @@ def _images_ok():
 
 def checks():
     disk, mem = host.disk_free_gib(), host.mem_available_gib()
+    cgroup_ok = any((r / "cgroup.controllers").exists() for r in CGROUP_ROOTS)
     result = [
         ("Docker activo", _ok(["docker", "info"]), ""),
         ("docker compose", _ok(["docker", "compose", "version"]), "instala Docker Compose v2"),
-        ("cgroups v2", Path("/sys/fs/cgroup/cgroup.controllers").exists(), "ejecuta dentro de Linux/WSL2 con cgroups v2"),
+        ("cgroups v2", cgroup_ok, "ejecuta dentro de Linux/WSL2 con cgroups v2"),
         ("Dataset cargado", (STATE_DIR / "dataset.json").exists(), "ejecuta ./run_benchmarks.sh load-data"),
         (f"Disco libre >= {MIN_DISK_GIB} GiB", disk >= MIN_DISK_GIB, f"{disk:.1f} GiB"),
         ("CPUs lógicas para cpusets", *_cpus_ok()),

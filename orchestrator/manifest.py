@@ -6,6 +6,7 @@ from benchmark_runner.config import ROOT
 
 PROTECTED = [
     "docker-compose.yml",
+    "telemetry/prometheus.yml",
     "profiles/A.env",
     "profiles/B.env",
     "profiles/C.env",

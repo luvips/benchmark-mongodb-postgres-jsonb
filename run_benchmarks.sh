@@ -16,8 +16,13 @@ fi
 
 if [[ -x ".venv/bin/python" ]]; then
   PYTHON_BIN=".venv/bin/python"
-else
+elif [[ -x ".venv/Scripts/python.exe" ]]; then
+  PYTHON_BIN=".venv/Scripts/python.exe"
+elif command -v python3 >/dev/null 2>&1; then
   PYTHON_BIN="python3"
+else
+  PYTHON_BIN="python"
 fi
 
 exec "$PYTHON_BIN" -m orchestrator.cli "$@"
+
