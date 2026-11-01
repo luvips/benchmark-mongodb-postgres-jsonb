@@ -1,0 +1,15 @@
+\begin{tabular}{@{}lllllrrr@{}}
+\toprule
+Q & Perf. & Motor & Acceso a datos & Ordenación/agrupación & Spill (MiB) & Tiempo (ms) & Workers \\
+\midrule
+Q1 & A & PG & Seq Scan paralelo & external merge & 705 & 5\,654 & 2 \\
+Q1 & A & Mongo & COLLSCAN & memoria (62.2 KiB) & 0 & 3\,221 & --- \\
+Q1 & C & PG & Seq Scan paralelo & external merge & 705 & 8\,041 & 2 \\
+Q1 & C & Mongo & COLLSCAN & memoria (62.2 KiB) & 0 & 3\,482 & --- \\
+\addlinespace[2pt]
+Q2 & A & PG & Seq Scan paralelo & top-N heapsort & 0 & 2\,201 & 2 \\
+Q2 & A & Mongo & IXSCAN+FETCH & memoria (1.35 MB) & 0 & 5\,591 & --- \\
+Q2 & C & PG & Seq Scan paralelo & top-N heapsort & 0 & 2\,561 & 2 \\
+Q2 & C & Mongo & IXSCAN+FETCH & memoria (1.35 MB) & 0 & 9\,098 & --- \\
+\bottomrule
+\end{tabular}

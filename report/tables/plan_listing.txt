@@ -1,0 +1,17 @@
+GroupAggregate  [t=7711.383ms rows=96.00 x1]
+  ->  Incremental Sort  [t=7449.376ms rows=644159.00 x1]
+        Sort Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text)), ((item...
+        Presorted Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text))
+        Full-sort Groups: 8  Sort Method: quicksort  Average Memory: 38kB  Peak Memory: 38kB
+        Pre-sorted Groups: 8  Sort Method: external merge  Average Disk: 20327kB  Peak Disk: 34336kB
+        ->  Nested Loop  [t=7050.339ms rows=644159.00 x1]
+              ->  Gather Merge  [t=6054.860ms rows=500000.00 x1]
+                    Workers Launched: 2
+                    ->  Sort  [t=5125.910ms rows=166666.67 x3]
+                          Sort Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'countr...
+                          Sort Method: external merge  Disk: 221680kB
+                            Sort Method: external merge  Disk: 248680kB
+                            Sort Method: external merge  Disk: 251064kB
+                          ->  Parallel Seq Scan on public.orders  [t=3193.421ms rows=166666.67 x3]
+              ->  Function Scan on pg_catalog.jsonb_array_elements item  [t=0.001ms rows=1.29 x50000...
+Execution Time: 8041.490 ms
