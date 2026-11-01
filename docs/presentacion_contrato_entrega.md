@@ -112,8 +112,8 @@ flowchart LR
 
 - **Dimensiones de la Matriz:**
   - **Matriz Principal (`mediciones.csv`):** $2\text{ motores} \times 3\text{ perfiles} \times 2\text{ queries} \times 3\text{ concurrencias} = 36\text{ celdas} \times 3\text{ repeticiones} = 108\text{ corridas}$ (variante `strict`: `work_mem=4MB`, `allowDiskUse=false`).
-  - **Anexo de Variantes de Memoria (`anexo_variantes.csv`):** variante `relaxed` (`work_mem=64MB`, `allowDiskUse=true`) en `PROFILE_C_SEVERE` $\times$ `Q1`/`Q2` $\times$ $c = 1, 10, 50$ $= 12$ celdas $\times 3 = 36$ corridas, con `query_id = Q1_relaxed` / `Q2_relaxed` para que la concatenación no duplique claves + `meta.json` individual por corrida.
-  - **Duración estimada:** $144$ corridas $\times \sim 8$ min $\approx 19$ h.
+  - **Anexo de Variantes de Memoria (`anexo_variantes.csv`):** variante `relaxed` (`work_mem=64MB`, `allowDiskUse=true`) en `PROFILE_C_SEVERE` $\times$ `Q1`/`Q2` $\times$ $c = 1, 10, 50$ $= 12$ celdas $\times 3 = 36$ corridas, **más** `Q2_relaxed` en `PROFILE_A_BASELINE` y `PROFILE_B_MEDIUM` ($12$ celdas $\times 3 = 36$ corridas) para que `Q2` tenga ambas variantes en los 3 perfiles (lectura literal de la sección 5.2). Anexo total: $72$ corridas, con `query_id = Q1_relaxed` / `Q2_relaxed` para que la concatenación no duplique claves + `meta.json` individual por corrida.
+  - **Duración estimada:** $108 + 72 = 180$ corridas $\times \sim 7$ min $\approx 21.5$ h.
 - **Ciclo de ejecución por repetición (con recreación de contenedor para vaciar cachés internas):**
   $$\text{recrear contenedor} \rightarrow \text{flush caché OS} \rightarrow \text{warmup } 60\text{ s} \rightarrow \text{medición } 300\text{ s} \rightarrow \text{cooldown } 60\text{ s}$$
 - **Producto mínimo por celda:** Una fila CSV por repetición + nota de estado (`ok` / `spill` / `oom` / `error`) + `meta.json` con $n$, `m3_memory_peak_mb`, `m3_memory_mb_s_per_1k_docs`, `cpu_usage_seconds` y versión.
