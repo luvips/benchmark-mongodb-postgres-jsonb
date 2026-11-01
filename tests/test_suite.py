@@ -45,11 +45,18 @@ def test_plan_includes_36_base_and_q1_q2_relaxed():
     strict = [r for r in plan if r["variant"] == "strict"]
     relaxed = [r for r in plan if r["variant"] == "relaxed"]
     assert len(strict) == 36 * 3  # 108 corridas base
-    # 2 motores x perfil C x (Q1, Q2) x c=(1, 10, 50) x 3 reps = 36 corridas de contraste M2
-    assert len(relaxed) == 2 * 1 * 2 * 3 * 3
-    assert {r["profile"] for r in relaxed} == {"C"}
+    # Perfil C x (Q1, Q2) = 36 corridas + extensión Q2 en A y B = 36 corridas
+    assert len(relaxed) == 2 * 1 * 2 * 3 * 3 + 2 * 2 * 1 * 3 * 3
+    assert {r["profile"] for r in relaxed if r["query"] == "Q1"} == {"C"}
+    assert {r["profile"] for r in relaxed if r["query"] == "Q2"} == {"A", "B", "C"}
     assert {r["concurrency"] for r in relaxed} == {1, 10, 50}
+    assert len(plan) == 180
     assert len({r["id"] for r in plan}) == len(plan)
+    # Las variantes de Q2 cubren todos los perfiles y concurrencias (Sección 5.2 del playbook)
+    for variant in ("strict", "relaxed"):
+        cells = {(r["engine"], r["profile"], r["concurrency"]) for r in plan
+                 if r["query"] == "Q2" and r["variant"] == variant}
+        assert len(cells) == 2 * 3 * 3
 
 
 def test_relaxed_query_id_does_not_collide_on_concat():
