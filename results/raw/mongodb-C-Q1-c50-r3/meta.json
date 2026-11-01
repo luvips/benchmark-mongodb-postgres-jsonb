@@ -1,0 +1,83 @@
+{
+  "run": {
+    "id": "mongodb-C-Q1-c50-r3",
+    "engine": "mongodb",
+    "profile": "C",
+    "query": "Q1",
+    "concurrency": 50,
+    "rep": 3,
+    "variant": "strict"
+  },
+  "engine_version": "MongoDB 9.0.4",
+  "profile_spec": {
+    "cpus": 1.0,
+    "memory_mb": 1024,
+    "memswap_mb": 1024,
+    "pg_shared_buffers": "256MB",
+    "mongo_wt_cache_gb": 0.25
+  },
+  "limits": {
+    "NanoCpus": 1000000000,
+    "Memory": 1073741824,
+    "MemorySwap": 1073741824,
+    "CpusetCpus": "0-3",
+    "Image": "mongo:9.0.4@sha256:452bdaf2127b8ff851e31410a267809b9829eded219979f2210e7c7efb85a058"
+  },
+  "variant": "strict",
+  "session_options": {
+    "allowDiskUse": false
+  },
+  "n_completed": 150,
+  "n_censored": 50,
+  "signals": {
+    "completed": 150,
+    "censored": 50,
+    "memory_errors": 0,
+    "conn_lost": 0,
+    "other_errors": 0,
+    "oom_kills": 0,
+    "spill": false,
+    "telemetry_ok": true
+  },
+  "verdict": {
+    "fault": false,
+    "status": "ok",
+    "reason": "ok"
+  },
+  "noisy": false,
+  "idle_sibling_busy_pct": 0.8177813309349522,
+  "cpu_usage_seconds": 300.041929,
+  "prometheus_cpu_usage_seconds": 299.438474,
+  "cgroup_throttled_seconds": 894.73497,
+  "nr_throttled_final": 3611,
+  "m3_docs_per_query": 500000,
+  "m3_total_kdocs_processed": 75000.0,
+  "m3_cpu_seconds_per_1k_docs": 0.004000559053333333,
+  "m3_memory_peak_mb": 607.22265625,
+  "m3_memory_mb_s_per_1k_docs": 2.3205503696316057,
+  "engine_mem_max_bytes": 636719104,
+  "engine_mem_byte_seconds": 182495506829.0123,
+  "engine_mem_integral_seconds": 301.58976229999826,
+  "memory_peak_bytes": 1073926144,
+  "prometheus_working_set_max_bytes": 947994624.0,
+  "anon_max_bytes": 636719104,
+  "shmem_max_bytes": 0,
+  "file_max_bytes": 463511552,
+  "current_max_bytes": 1073926144,
+  "cgroup_window_samples": 293,
+  "anon_final": 632606720,
+  "shmem_final": 0,
+  "file_final": 425934848,
+  "before_window": {
+    "sort_spills": 0,
+    "group_spills": 0
+  },
+  "after": {
+    "sort_spills": 0,
+    "group_spills": 0
+  },
+  "written_bytes_window": 2748416,
+  "hung_clients": 0,
+  "prometheus_samples": 300.0,
+  "metric_source": "prometheus"
+}

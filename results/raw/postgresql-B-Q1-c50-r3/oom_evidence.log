@@ -1,0 +1,11 @@
+docker inspect OOMKilled=True
+kernel: 0 eventos de OOM; motor: 9 líneas
+2026-11-01 10:26:10.306 UTC [1] LOG:  background worker "parallel worker" (PID 90) was terminated by signal 9: Killed
+2026-11-01 10:26:33.413 UTC [1] LOG:  background worker "parallel worker" (PID 216) was terminated by signal 9: Killed
+2026-11-01 10:27:19.973 UTC [1] LOG:  client backend (PID 356) was terminated by signal 9: Killed
+2026-11-01 10:27:46.738 UTC [1] LOG:  client backend (PID 530) was terminated by signal 9: Killed
+2026-11-01 10:28:15.973 UTC [1] LOG:  background worker "parallel worker" (PID 682) was terminated by signal 9: Killed
+2026-11-01 10:28:51.298 UTC [1] LOG:  background worker "parallel worker" (PID 795) was terminated by signal 9: Killed
+2026-11-01 10:29:36.577 UTC [1] LOG:  client backend (PID 982) was terminated by signal 9: Killed
+2026-11-01 10:29:59.313 UTC [1] LOG:  client backend (PID 1075) was terminated by signal 9: Killed
+2026-11-01 10:31:04.385 UTC [1] LOG:  client backend (PID 1204) was terminated by signal 9: Killed

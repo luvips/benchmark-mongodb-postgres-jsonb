@@ -1,0 +1,22 @@
+docker inspect OOMKilled=True
+kernel: 0 eventos de OOM; motor: 21 líneas
+2026-11-01 12:20:27.595 UTC [1] LOG:  client backend (PID 42) was terminated by signal 9: Killed
+2026-11-01 12:20:46.679 UTC [1] LOG:  background worker "parallel worker" (PID 91) was terminated by signal 9: Killed
+2026-11-01 12:21:04.790 UTC [1] LOG:  background worker "parallel worker" (PID 125) was terminated by signal 9: Killed
+2026-11-01 12:21:31.777 UTC [1] LOG:  background worker "parallel worker" (PID 160) was terminated by signal 9: Killed
+2026-11-01 12:21:52.592 UTC [1] LOG:  background worker "parallel worker" (PID 198) was terminated by signal 9: Killed
+2026-11-01 12:22:24.672 UTC [1] LOG:  background worker "parallel worker" (PID 235) was terminated by signal 9: Killed
+2026-11-01 12:22:47.496 UTC [1] LOG:  background worker "parallel worker" (PID 271) was terminated by signal 9: Killed
+2026-11-01 12:23:08.387 UTC [1] LOG:  client backend (PID 301) was terminated by signal 9: Killed
+2026-11-01 12:23:20.591 UTC [1] LOG:  client backend (PID 340) was terminated by signal 9: Killed
+2026-11-01 12:23:34.382 UTC [1] LOG:  background worker "parallel worker" (PID 379) was terminated by signal 9: Killed
+2026-11-01 12:23:50.580 UTC [1] LOG:  background worker "parallel worker" (PID 421) was terminated by signal 9: Killed
+2026-11-01 12:24:05.681 UTC [1] LOG:  background worker "parallel worker" (PID 457) was terminated by signal 9: Killed
+2026-11-01 12:24:19.567 UTC [1] LOG:  background worker "parallel worker" (PID 487) was terminated by signal 9: Killed
+2026-11-01 12:24:29.578 UTC [1] LOG:  client backend (PID 513) was terminated by signal 9: Killed
+2026-11-01 12:24:37.280 UTC [1] LOG:  background worker "parallel worker" (PID 563) was terminated by signal 9: Killed
+2026-11-01 12:24:57.469 UTC [1] LOG:  background worker "parallel worker" (PID 601) was terminated by signal 9: Killed
+2026-11-01 12:25:10.175 UTC [1] LOG:  background worker "parallel worker" (PID 632) was terminated by signal 9: Killed
+2026-11-01 12:25:25.563 UTC [1] LOG:  background worker "parallel worker" (PID 672) was terminated by signal 9: Killed
+2026-11-01 12:25:41.760 UTC [1] LOG:  background worker "parallel worker" (PID 709) was terminated by signal 9: Killed
+2026-11-01 12:26:00.580 UTC [1] LOG:  background worker "parallel worker" (PID 745) was terminated by signal 9: Killed

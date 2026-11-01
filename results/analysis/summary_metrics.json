@@ -1,0 +1,319 @@
+{
+  "total_rows_loaded": 6,
+  "total_cells_aggregated": 5,
+  "cells": [
+    {
+      "engine": "mongodb",
+      "profile": "PROFILE_A_BASELINE",
+      "query_id": "Q1",
+      "concurrency": 10,
+      "runs": 1,
+      "statuses": [
+        "ok"
+      ],
+      "spill_runs": 0,
+      "min_n_completed": 301,
+      "p99_reliable": true,
+      "qps": {
+        "median": 1.003,
+        "min": 1.003,
+        "max": 1.003
+      },
+      "p50_ms": {
+        "median": 9731.023,
+        "min": 9731.023,
+        "max": 9731.023
+      },
+      "p95_ms": {
+        "median": 13445.66,
+        "min": 13445.66,
+        "max": 13445.66
+      },
+      "p99_ms": {
+        "median": 14322.562,
+        "min": 14322.562,
+        "max": 14322.562
+      },
+      "throttled_s": {
+        "median": 2.463,
+        "min": 2.463,
+        "max": 2.463
+      },
+      "max_rss_mb": {
+        "median": 736.32,
+        "min": 736.32,
+        "max": 736.32
+      },
+      "m3_cpu_s_per_1k_docs": {
+        "median": 0.0079,
+        "min": 0.0079,
+        "max": 0.0079
+      },
+      "m3_memory_peak_mb": {
+        "median": 736.3203,
+        "min": 736.3203,
+        "max": 736.3203
+      },
+      "m3_memory_mb_s_per_1k_docs": {
+        "median": 1.4721,
+        "min": 1.4721,
+        "max": 1.4721
+      },
+      "written_mb_window_median": 2.25,
+      "series_files": [
+        "C:\\Users\\luvia\\benchmark-mongodb-postgres-jsonb\\results\\raw\\mongodb-A-Q1-c10-r1\\series.csv"
+      ]
+    },
+    {
+      "engine": "mongodb",
+      "profile": "PROFILE_C_SEVERE",
+      "query_id": "Q1",
+      "concurrency": 1,
+      "runs": 2,
+      "statuses": [
+        "ok",
+        "ok"
+      ],
+      "spill_runs": 0,
+      "min_n_completed": 155,
+      "p99_reliable": true,
+      "qps": {
+        "median": 0.522,
+        "min": 0.517,
+        "max": 0.527
+      },
+      "p50_ms": {
+        "median": 1853.419,
+        "min": 1821.161,
+        "max": 1885.677
+      },
+      "p95_ms": {
+        "median": 2292.8385,
+        "min": 2275.87,
+        "max": 2309.807
+      },
+      "p99_ms": {
+        "median": 2815.7765,
+        "min": 2597.669,
+        "max": 3033.884
+      },
+      "throttled_s": {
+        "median": 10.5975,
+        "min": 10.547,
+        "max": 10.648
+      },
+      "max_rss_mb": {
+        "median": 426.373,
+        "min": 426.328,
+        "max": 426.418
+      },
+      "m3_cpu_s_per_1k_docs": {
+        "median": 0.0038,
+        "min": 0.0038,
+        "max": 0.0039
+      },
+      "m3_memory_peak_mb": {
+        "median": 426.373,
+        "min": 426.3281,
+        "max": 426.418
+      },
+      "m3_memory_mb_s_per_1k_docs": {
+        "median": 1.5752,
+        "min": 1.5645,
+        "max": 1.5859
+      },
+      "written_mb_window_median": 2.47,
+      "series_files": [
+        "C:\\Users\\luvia\\benchmark-mongodb-postgres-jsonb\\results\\raw\\mongodb-C-Q1-c1-r1\\series.csv",
+        "C:\\Users\\luvia\\benchmark-mongodb-postgres-jsonb\\results\\pilot\\mongodb-C-Q1-c1-strict-1793432845\\series.csv"
+      ]
+    },
+    {
+      "engine": "postgresql",
+      "profile": "PROFILE_C_SEVERE",
+      "query_id": "Q1",
+      "concurrency": 1,
+      "runs": 1,
+      "statuses": [
+        "spill"
+      ],
+      "spill_runs": 1,
+      "min_n_completed": 42,
+      "p99_reliable": false,
+      "qps": {
+        "median": 0.14,
+        "min": 0.14,
+        "max": 0.14
+      },
+      "p50_ms": {
+        "median": 7084.018,
+        "min": 7084.018,
+        "max": 7084.018
+      },
+      "p95_ms": {
+        "median": 7954.566,
+        "min": 7954.566,
+        "max": 7954.566
+      },
+      "p99_ms": {
+        "median": 7985.626,
+        "min": 7985.626,
+        "max": 7985.626
+      },
+      "throttled_s": {
+        "median": 275.998,
+        "min": 275.998,
+        "max": 275.998
+      },
+      "max_rss_mb": {
+        "median": 100.688,
+        "min": 100.688,
+        "max": 100.688
+      },
+      "m3_cpu_s_per_1k_docs": {
+        "median": 0.0141,
+        "min": 0.0141,
+        "max": 0.0141
+      },
+      "m3_memory_peak_mb": {
+        "median": 323.9141,
+        "min": 323.9141,
+        "max": 323.9141
+      },
+      "m3_memory_mb_s_per_1k_docs": {
+        "median": 3.408,
+        "min": 3.408,
+        "max": 3.408
+      },
+      "written_mb_window_median": 58806.68,
+      "series_files": [
+        "C:\\Users\\luvia\\benchmark-mongodb-postgres-jsonb\\results\\pilot\\postgresql-C-Q1-c1-strict-1793432247\\series.csv"
+      ]
+    },
+    {
+      "engine": "postgresql",
+      "profile": "PROFILE_B_MEDIUM",
+      "query_id": "Q2",
+      "concurrency": 50,
+      "runs": 1,
+      "statuses": [
+        "ok"
+      ],
+      "spill_runs": 0,
+      "min_n_completed": 741,
+      "p99_reliable": true,
+      "qps": {
+        "median": 2.47,
+        "min": 2.47,
+        "max": 2.47
+      },
+      "p50_ms": {
+        "median": 19620.567,
+        "min": 19620.567,
+        "max": 19620.567
+      },
+      "p95_ms": {
+        "median": 25696.184,
+        "min": 25696.184,
+        "max": 25696.184
+      },
+      "p99_ms": {
+        "median": 31965.09,
+        "min": 31965.09,
+        "max": 31965.09
+      },
+      "throttled_s": {
+        "median": 582.713,
+        "min": 582.713,
+        "max": 582.713
+      },
+      "max_rss_mb": {
+        "median": 581.352,
+        "min": 581.352,
+        "max": 581.352
+      },
+      "m3_cpu_s_per_1k_docs": {
+        "median": 0.0016,
+        "min": 0.0016,
+        "max": 0.0016
+      },
+      "m3_memory_peak_mb": {
+        "median": 1147.8828,
+        "min": 1147.8828,
+        "max": 1147.8828
+      },
+      "m3_memory_mb_s_per_1k_docs": {
+        "median": 0.9242,
+        "min": 0.9242,
+        "max": 0.9242
+      },
+      "written_mb_window_median": 0.21,
+      "series_files": [
+        "C:\\Users\\luvia\\benchmark-mongodb-postgres-jsonb\\results\\raw\\postgresql-B-Q2-c50-r1\\series.csv"
+      ]
+    },
+    {
+      "engine": "postgresql",
+      "profile": "PROFILE_C_SEVERE",
+      "query_id": "Q2",
+      "concurrency": 50,
+      "runs": 1,
+      "statuses": [
+        "ok"
+      ],
+      "spill_runs": 0,
+      "min_n_completed": 96,
+      "p99_reliable": false,
+      "qps": {
+        "median": 0.32,
+        "min": 0.32,
+        "max": 0.32
+      },
+      "p50_ms": {
+        "median": 153427.032,
+        "min": 153427.032,
+        "max": 153427.032
+      },
+      "p95_ms": {
+        "median": 243298.32,
+        "min": 243298.32,
+        "max": 243298.32
+      },
+      "p99_ms": {
+        "median": 272961.266,
+        "min": 272961.266,
+        "max": 272961.266
+      },
+      "throttled_s": {
+        "median": 820.791,
+        "min": 820.791,
+        "max": 820.791
+      },
+      "max_rss_mb": {
+        "median": 575.574,
+        "min": 575.574,
+        "max": 575.574
+      },
+      "m3_cpu_s_per_1k_docs": {
+        "median": 0.0063,
+        "min": 0.0063,
+        "max": 0.0063
+      },
+      "m3_memory_peak_mb": {
+        "median": 872.3984,
+        "min": 872.3984,
+        "max": 872.3984
+      },
+      "m3_memory_mb_s_per_1k_docs": {
+        "median": 5.4257,
+        "min": 5.4257,
+        "max": 5.4257
+      },
+      "written_mb_window_median": 0.05,
+      "series_files": [
+        "C:\\Users\\luvia\\benchmark-mongodb-postgres-jsonb\\results\\raw\\postgresql-C-Q2-c50-r1\\series.csv"
+      ]
+    }
+  ],
+  "m1_degradation": []
+}

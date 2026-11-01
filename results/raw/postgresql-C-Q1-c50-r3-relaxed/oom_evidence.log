@@ -1,0 +1,8 @@
+docker inspect OOMKilled=True
+kernel: 0 eventos de OOM; motor: 6 líneas
+2026-11-01 13:54:51.098 UTC [1] LOG:  client backend (PID 44) was terminated by signal 9: Killed
+2026-11-01 13:56:15.204 UTC [1] LOG:  client backend (PID 671) was terminated by signal 9: Killed
+2026-11-01 13:57:12.098 UTC [1] LOG:  client backend (PID 1385) was terminated by signal 9: Killed
+2026-11-01 13:57:49.101 UTC [1] LOG:  client backend (PID 2014) was terminated by signal 9: Killed
+2026-11-01 13:59:07.486 UTC [1] LOG:  client backend (PID 2609) was terminated by signal 9: Killed
+2026-11-01 14:00:14.585 UTC [1] LOG:  client backend (PID 2937) was terminated by signal 9: Killed

@@ -1,0 +1,58 @@
+GroupAggregate  (cost=254043.26..3141668.67 rows=16504191 width=136) (actual time=3032.441..4939.121 rows=96.00 loops=1)
+  Output: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text)), ((item.value ->> 'category'::text)), sum((((item.value ->> 'qty'::text))::numeric * ((item.value ->> 'price'::text))::numeric)), avg((((item.value ->> 'qty'::text))::numeric * ((item.value ->> 'price'::text))::numeric)), count(*)
+  Group Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text)), ((item.value ->> 'category'::text))
+  Buffers: shared hit=76 read=100064, temp read=90160 written=90169
+  ->  Incremental Sort  (cost=254043.26..2275198.64 rows=16504191 width=96) (actual time=3029.869..4691.128 rows=644159.00 loops=1)
+        Output: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text)), ((item.value ->> 'category'::text)), item.value
+        Sort Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text)), ((item.value ->> 'category'::text))
+        Presorted Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text))
+        Full-sort Groups: 8  Sort Method: quicksort  Average Memory: 37kB  Peak Memory: 37kB
+        Pre-sorted Groups: 8  Sort Method: quicksort  Average Memory: 24516kB  Peak Memory: 42039kB
+        Buffers: shared hit=76 read=100064, temp read=90160 written=90169
+        ->  Nested Loop  (cost=254039.65..1642625.50 rows=16504191 width=96) (actual time=2894.675..4388.403 rows=644159.00 loops=1)
+              Output: (((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text), (item.value ->> 'category'::text), item.value
+              Buffers: shared hit=76 read=100064, temp read=90160 written=90169
+              ->  Gather Merge  (cost=254039.64..312287.67 rows=500127 width=1460) (actual time=2893.909..3425.780 rows=500000.00 loops=1)
+                    Output: orders.data
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=76 read=100064, temp read=90160 written=90169
+                    ->  Sort  (cost=253039.62..253560.58 rows=208386 width=1460) (actual time=2851.410..2966.243 rows=166666.67 loops=3)
+                          Output: orders.data, ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text))
+                          Sort Key: ((((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text))
+                          Sort Method: external merge  Disk: 233336kB
+                          Buffers: shared hit=76 read=100064, temp read=90160 written=90169
+                          Worker 0:  actual time=2867.688..2997.896 rows=170898.00 loops=1
+                            Sort Method: external merge  Disk: 246584kB
+                            JIT:
+                              Functions: 2
+                              Options: Inlining true, Optimization true, Expressions true, Deforming true
+                              Timing: Generation 0.597 ms (Deform 0.119 ms), Inlining 91.532 ms, Optimization 82.614 ms, Emission 56.295 ms, Total 231.038 ms
+                            Buffers: shared hit=38 read=34208, temp read=30823 written=30826
+                          Worker 1:  actual time=2831.222..2959.513 rows=167296.00 loops=1
+                            Sort Method: external merge  Disk: 241360kB
+                            JIT:
+                              Functions: 2
+                              Options: Inlining true, Optimization true, Expressions true, Deforming true
+                              Timing: Generation 0.215 ms (Deform 0.050 ms), Inlining 118.190 ms, Optimization 51.794 ms, Emission 57.165 ms, Total 227.364 ms
+                            Buffers: shared hit=38 read=33488, temp read=30170 written=30173
+                          ->  Parallel Seq Scan on public.orders  (cost=0.00..102147.86 rows=208386 width=1460) (actual time=279.451..1812.744 rows=166666.67 loops=3)
+                                Output: orders.data, (((orders.data -> 'customer'::text) -> 'geo'::text) ->> 'country'::text)
+                                Buffers: shared read=100064
+                                Worker 0:  actual time=231.841..1763.659 rows=170898.00 loops=1
+                                  Buffers: shared read=34208
+                                Worker 1:  actual time=228.540..1796.299 rows=167296.00 loops=1
+                                  Buffers: shared read=33488
+              ->  Function Scan on pg_catalog.jsonb_array_elements item  (cost=0.01..2.00 rows=33 width=32) (actual time=0.001..0.001 rows=1.29 loops=500000)
+                    Output: item.value
+                    Function Call: jsonb_array_elements((orders.data -> 'items'::text))
+                    Filter: (((item.value ->> 'price'::text))::numeric > '50'::numeric)
+                    Rows Removed by Filter: 2
+Planning:
+  Buffers: shared hit=205 read=38
+Planning Time: 16.006 ms
+JIT:
+  Functions: 17
+  Options: Inlining true, Optimization true, Expressions true, Deforming true
+  Timing: Generation 2.083 ms (Deform 0.344 ms), Inlining 367.606 ms, Optimization 237.816 ms, Emission 229.193 ms, Total 836.699 ms
+Execution Time: 5269.761 ms

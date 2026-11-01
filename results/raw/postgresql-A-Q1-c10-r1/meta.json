@@ -1,0 +1,83 @@
+{
+  "run": {
+    "id": "postgresql-A-Q1-c10-r1",
+    "engine": "postgresql",
+    "profile": "A",
+    "query": "Q1",
+    "concurrency": 10,
+    "rep": 1,
+    "variant": "strict"
+  },
+  "engine_version": "PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2)",
+  "profile_spec": {
+    "cpus": 4.0,
+    "memory_mb": 4096,
+    "memswap_mb": 4096,
+    "pg_shared_buffers": "1024MB",
+    "mongo_wt_cache_gb": 1.5
+  },
+  "limits": {
+    "NanoCpus": 4000000000,
+    "Memory": 4294967296,
+    "MemorySwap": 4294967296,
+    "CpusetCpus": "0-3",
+    "Image": "postgres:18.6@sha256:979bccfde35445db618c65107d27d08c6c21339d8dc3ad4c830c6633947be0e4"
+  },
+  "variant": "strict",
+  "session_options": {
+    "work_mem": "4MB"
+  },
+  "n_completed": 41,
+  "n_censored": 6,
+  "signals": {
+    "completed": 41,
+    "censored": 6,
+    "memory_errors": 0,
+    "conn_lost": 0,
+    "other_errors": 0,
+    "oom_kills": 0,
+    "spill": true,
+    "telemetry_ok": true
+  },
+  "verdict": {
+    "fault": false,
+    "status": "spill",
+    "reason": "disk_spill"
+  },
+  "noisy": false,
+  "idle_sibling_busy_pct": 3.1916664476393235,
+  "cpu_usage_seconds": 365.696608,
+  "prometheus_cpu_usage_seconds": 362.937011,
+  "cgroup_throttled_seconds": 1.999193,
+  "nr_throttled_final": 118,
+  "m3_docs_per_query": 500000,
+  "m3_total_kdocs_processed": 20500.0,
+  "m3_cpu_seconds_per_1k_docs": 0.01783885892682927,
+  "m3_memory_peak_mb": 1249.42578125,
+  "m3_memory_mb_s_per_1k_docs": 16.710562497522858,
+  "engine_mem_max_bytes": 1310117888,
+  "engine_mem_byte_seconds": 359207043018.75183,
+  "engine_mem_integral_seconds": 302.84378769999995,
+  "memory_peak_bytes": 4295233536,
+  "prometheus_working_set_max_bytes": 2599129088.0,
+  "anon_max_bytes": 593768448,
+  "shmem_max_bytes": 771186688,
+  "file_max_bytes": 3824140288,
+  "current_max_bytes": 4294967296,
+  "cgroup_window_samples": 275,
+  "anon_final": 5492736,
+  "shmem_final": 756891648,
+  "file_final": 869105664,
+  "before_window": {
+    "temp_files": 4016,
+    "temp_bytes": 336340566016
+  },
+  "after": {
+    "temp_files": 4502,
+    "temp_bytes": 380446457856
+  },
+  "written_bytes_window": 58430246912,
+  "hung_clients": 6,
+  "prometheus_samples": 286.0,
+  "metric_source": "prometheus"
+}

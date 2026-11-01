@@ -1,0 +1,206 @@
+{
+ "explainVersion": "1",
+ "stages": [
+  {
+   "$cursor": {
+    "queryPlanner": {
+     "namespace": "bench.orders",
+     "parsedQuery": {},
+     "indexFilterSet": false,
+     "queryHash": "51018CFF",
+     "planCacheShapeHash": "51018CFF",
+     "planCacheKey": "7CF6F44B",
+     "optimizationTimeMillis": 2,
+     "optimizationTimeMicros": 2923,
+     "cursorType": "regular",
+     "maxIndexedOrSolutionsReached": false,
+     "maxIndexedAndSolutionsReached": false,
+     "maxScansToExplodeReached": false,
+     "prunedSimilarIndexes": false,
+     "winningPlan": {
+      "isCached": false,
+      "stage": "PROJECTION_DEFAULT",
+      "transformBy": {
+       "customer.geo.country": 1,
+       "items": 1,
+       "_id": 0
+      },
+      "inputStage": {
+       "stage": "COLLSCAN",
+       "nss": "bench.orders",
+       "direction": "forward"
+      }
+     },
+     "rejectedPlans": []
+    },
+    "executionStats": {
+     "executionSuccess": true,
+     "nReturned": 500000,
+     "executionTimeMillis": 3486,
+     "executionTimeMicros": 3486107,
+     "totalKeysExamined": 0,
+     "totalDocsExamined": 500000,
+     "executionStages": {
+      "isCached": false,
+      "stage": "PROJECTION_DEFAULT",
+      "nReturned": 500000,
+      "executionTimeMillisEstimate": 1642,
+      "works": 500001,
+      "advanced": 500000,
+      "needTime": 0,
+      "needYield": 0,
+      "saveState": 222,
+      "restoreState": 221,
+      "isEOF": 1,
+      "transformBy": {
+       "customer.geo.country": 1,
+       "items": 1,
+       "_id": 0
+      },
+      "peakTrackedMemBytes": 0,
+      "inputStage": {
+       "stage": "COLLSCAN",
+       "nReturned": 500000,
+       "executionTimeMillisEstimate": 1459,
+       "works": 500001,
+       "advanced": 500000,
+       "needTime": 0,
+       "needYield": 0,
+       "saveState": 222,
+       "restoreState": 221,
+       "isEOF": 1,
+       "nss": "bench.orders",
+       "direction": "forward",
+       "docsExamined": 500000,
+       "seeks": 0
+      }
+     }
+    }
+   },
+   "nReturned": 500000,
+   "executionTimeMillisEstimate": 2035
+  },
+  {
+   "$unwind": {
+    "path": "$items"
+   },
+   "nReturned": 1499046,
+   "executionTimeMillisEstimate": 2340
+  },
+  {
+   "$match": {
+    "items.price": {
+     "$gt": 50
+    }
+   },
+   "nReturned": 644159,
+   "executionTimeMillisEstimate": 2797,
+   "expressionEvaluationPeakMemoryBytes": 512
+  },
+  {
+   "$group": {
+    "_id": {
+     "country": "$customer.geo.country",
+     "category": "$items.category"
+    },
+    "total_revenue": {
+     "$sum": {
+      "$multiply": [
+       "$items.qty",
+       "$items.price"
+      ]
+     }
+    },
+    "avg_revenue": {
+     "$avg": {
+      "$multiply": [
+       "$items.qty",
+       "$items.price"
+      ]
+     }
+    },
+    "count": {
+     "$sum": {
+      "$const": 1
+     }
+    },
+    "$willBeMerged": false
+   },
+   "nReturned": 96,
+   "executionTimeMillisEstimate": 3482,
+   "maxAccumulatorMemoryUsageBytes": {
+    "total_revenue": 19200,
+    "avg_revenue": 16896,
+    "count": 19200
+   },
+   "totalOutputDataSizeBytes": 51648,
+   "usedDisk": false,
+   "spills": 0,
+   "spilledDataStorageSize": 0,
+   "spilledBytes": 0,
+   "spilledRecords": 0,
+   "peakTrackedMemBytes": 63744
+  }
+ ],
+ "queryShapeHash": "83A54029C34D03E4EFB2D04682588A4B2D468DD1CCDA9BC28AD756C5E9DD059D",
+ "peakTrackedMemBytes": 64256,
+ "serverInfo": {
+  "host": "16ac1574c688",
+  "port": 27017,
+  "version": "9.0.4",
+  "gitVersion": "64ade602b836c9adeffba7fa038c887ffab56196"
+ },
+ "serverParameters": {
+  "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+  "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+  "internalQueryProhibitBlockingMergeOnMongoS": 0,
+  "internalQueryFrameworkControl": "trySbeRestricted",
+  "internalQueryPlannerIgnoreIndexWithCollationForRegex": 1
+ },
+ "command": {
+  "aggregate": "orders",
+  "pipeline": [
+   {
+    "$unwind": "$items"
+   },
+   {
+    "$match": {
+     "items.price": {
+      "$gt": 50
+     }
+    }
+   },
+   {
+    "$group": {
+     "_id": {
+      "country": "$customer.geo.country",
+      "category": "$items.category"
+     },
+     "total_revenue": {
+      "$sum": {
+       "$multiply": [
+        "$items.qty",
+        "$items.price"
+       ]
+      }
+     },
+     "avg_revenue": {
+      "$avg": {
+       "$multiply": [
+        "$items.qty",
+        "$items.price"
+       ]
+      }
+     },
+     "count": {
+      "$sum": 1
+     }
+    }
+   }
+  ],
+  "cursor": {},
+  "allowDiskUse": false,
+  "$db": "bench"
+ },
+ "ok": 1.0
+}
